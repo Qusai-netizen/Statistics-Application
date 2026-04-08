@@ -29,7 +29,6 @@ public class HistoryPanel extends JPanel {
     private final JList<Experiment> historyList;
     private final JTextArea detailsArea;
     
-    // ألوان التصميم الموحدة
     private final Color PRIMARY_BLUE = new Color(41, 128, 185);
     private final Color BACKGROUND_COLOR = new Color(245, 247, 250);
 
@@ -70,11 +69,9 @@ public class HistoryPanel extends JPanel {
         centerPanel.add(detailsScrollPane, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        // تعديل: إنشاء زر رجوع بستايل عصري (Modern Style)
         JButton backButton = createModernButton("Back To Home", "🏠");
         backButton.addActionListener(e -> mainFrame.showPage("Home"));
         
-        // وضع الزر في لوحة سفلية لإعطائه مساحة مناسبة
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false);
         bottomPanel.add(backButton);
@@ -89,8 +86,7 @@ public class HistoryPanel extends JPanel {
         refreshHistory();
     }
 
-    // دالة مساعدة لإنشاء الزر بنفس أسلوب InputPanel للاتساق
-    private JButton createModernButton(String text, String icon) {
+\    private JButton createModernButton(String text, String icon) {
         JButton btn = new JButton(icon + " " + text);
         btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btn.setBackground(PRIMARY_BLUE);
@@ -100,8 +96,7 @@ public class HistoryPanel extends JPanel {
         btn.setBorder(BorderFactory.createEmptyBorder());
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // تأثير الحركية عند تمرير الماوس
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+\        btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btn.setBackground(PRIMARY_BLUE.brighter());
             }
