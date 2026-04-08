@@ -98,8 +98,6 @@ public class InputPanel extends JPanel {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 10, 40));
         buttonPanel.setOpaque(false);
 
-        // تعديل: استخدمت رموز ASCII بدل الرموز المشفرة حتى يبقى الملف مستقراً مع أي
-        // ترميز.
         JButton qualBtn = createModernButton("Qualitative", "[TXT]");
         JButton quanBtn = createModernButton("Quantitative", "[NUM]");
         JButton quanCFBtn = createModernButton("Quantitative (Classes, Frequency)", "[CLS]");
@@ -145,7 +143,6 @@ public class InputPanel extends JPanel {
             statisDb.Experiment savedExperiment = processData(selectedType);
 
             if (savedExperiment != null) {
-                // تعديل: نحذف شاشة النتائج القديمة ثم نضيف شاشة مبنية من آخر تجربة تم حفظها.
                 if (statisticsPanel != null) {
                     mainFrame.mainContainer.remove(statisticsPanel);
                 }
@@ -246,8 +243,6 @@ public class InputPanel extends JPanel {
             return null;
         }
 
-        // تعديل: الحفظ صار يتم مرة واحدة فقط بعد اكتمال التحقق حتى لا تتكرر التجربة
-        // داخل قاعدة البيانات.
         statisDb.Experiment savedExperiment;
         if (type == statisDb.Experiment.enType.QUAN) {
             savedExperiment = mainN.db.addExper(type, experName, sData, iData, classesNum);
@@ -261,7 +256,6 @@ public class InputPanel extends JPanel {
     }
 
     private void clearFields() {
-        // تعديل: تنظيف الحقلين يمنع انتقال بيانات قديمة إلى تجربة جديدة عن طريق الخطأ.
         nameField.setText("");
         txtDataArea.setText("");
         numDataArea.setText("");
