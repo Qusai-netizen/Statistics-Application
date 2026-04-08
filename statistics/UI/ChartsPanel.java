@@ -1,11 +1,11 @@
-package statistics.UI;
+package UI;
 
 import javax.swing.*;
 
-import statistics.Charts.FreqHistogram;
-import statistics.Charts.FreqPolygon;
-import statistics.Charts.Ogive;
-import statistics.Charts.PieChart;
+import Charts.FreqHistogram;
+import Charts.FreqPolygon;
+import Charts.Ogive;
+import Charts.PieChart;
 
 import java.awt.*;
 
