@@ -1,8 +1,8 @@
-package statistics.UI;
+package UI;
 
 import javax.swing.*;
 
-import statistics.UIData.Table;
+import UIData.Table;
 
 import java.awt.*;
 
