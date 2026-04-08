@@ -1,11 +1,16 @@
-package statistics.UI;
+package UI;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class ui {
+
+    private CardLayout cardLayout;
+    public JPanel mainContainer;
 
     public ui(JScrollPane scrollpane) {
 
@@ -31,7 +36,7 @@ public class ui {
 
     }
 
-    public ui(TablesPanel tP, ChartsPanel charts) {
+    public ui() {
 
         JFrame frame = new JFrame("Statistics Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,10 +44,22 @@ public class ui {
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
-        frame.add(tP, BorderLayout.EAST);
+        cardLayout = new CardLayout();
+        mainContainer = new JPanel(cardLayout);
+        
+        mainContainer.add(new HomePanel(this), "Home");
+        mainContainer.add(new InputPanel(this), "Input");
+        mainContainer.add(new HistoryPanel(this), "History");
 
-        frame.add(charts, BorderLayout.WEST);
+        frame.add(mainContainer);
+
+        showPage("Home");
+        
 
         frame.setVisible(true);
+    }
+
+    public void showPage(String pageName){
+        cardLayout.show(mainContainer, pageName);
     }
 }
