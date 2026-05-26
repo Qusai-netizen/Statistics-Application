@@ -1,42 +1,77 @@
-# Java Statistics Calculator & Visualizer
+# Java Statistics Calculator and Visualizer
 
-A comprehensive Java Swing application designed to perform descriptive and inferential statistical analysis and generate custom visual data representations. This project was built from the ground up without using external charting libraries, focusing on core Java 2D graphics and object-oriented principles.
+A Java Swing desktop application for statistical analysis, frequency tables, saved experiments, and custom visual charts. The project is built with core Java and Java 2D graphics, without external charting libraries.
 
-## 🚀 Features
+## Features
 
-- **Multi-Type Data Support**: 
-  - Raw Numeric Samples (calculates class intervals automatically).
-  - Grouped Data (Class frequency distribution).
-  - Qualitative Data (String-based samples).
-- **In-depth Statistical Logic**: 
-  - Measures of Central Tendency: Mean, Median, and Mode.
-  - Position Measures: Quartiles (Q1, Q2, Q3) for both raw and grouped data.
-  - Frequency Tables: Calculating boundaries, midpoints, relative frequency, and cumulative frequencies (Ascending/Descending).
-- **Custom Visualization Engine**: 
-  - Hand-rendered charts using `Graphics2D`.
-  - Supported Charts: **Pie Chart**, **Frequency Histogram**, **Frequency Polygon**, and **Ogive** (Cumulative Frequency Curve).
-- **Dynamic UI**: Responsive dashboard built with `JFrame` and `CardLayout` for seamless switching between different visualizations.
+- Multi-type data support:
+  - Raw numeric samples.
+  - Grouped data using classes and frequencies.
+  - Qualitative string samples.
+- Statistical calculations:
+  - Mean, median, and mode.
+  - Quartiles Q1, Q2, and Q3.
+  - Separate raw-sample methods and grouped-data methods, so each section calculates statistics in the proper way.
+  - Frequency, class boundaries, midpoints, relative frequency, and cumulative frequencies.
+- Full cumulative-frequency table details:
+  - Ascending cumulative frequency.
+  - Descending cumulative frequency.
+  - Less-than cumulative frequency.
+  - Greater-than cumulative frequency.
+  - Tables include the needed extra row beyond the class count for cumulative endpoints.
+- Custom chart rendering:
+  - Pie chart.
+  - Frequency histogram.
+  - Frequency polygon.
+  - Ogive.
+- Experiment management:
+  - Save experiments locally.
+  - Prevent repeated experiment names.
+  - View previous experiments in History.
+  - Open the statistics screen directly from a selected history item.
+- Modern Swing UI:
+  - Dashboard navigation with `CardLayout`.
+  - Back buttons for returning from statistics screens.
+  - Settings page.
+  - Night mode support.
+  - Shared theme styling for panels, buttons, tables, history, settings, and statistics views.
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
-The project follows a clean, modular structure:
+The project is organized into focused packages under `src`.
 
-* **Logic Layer (`statistics.StatisCalc`)**: Implements the mathematical formulas. Uses inheritance where `Quan` serves as a base class for specialized calculators like `QuanSambles` and `QuanWithClassesAndFreq`.
-* **Data Handling (`statistics.UIData`)**: An abstraction layer (`StatisticsDataset`) that prepares data for UI components, ensuring the logic remains decoupled from the presentation.
-* **Presentation Layer (`statistics.Charts` & `statistics.UI`)**: Custom components that handle the drawing logic. Each chart class overrides `paintComponent` to calculate coordinates and draw shapes dynamically based on input data.
+- `StatisCalc`
+  - Contains the statistical logic.
+  - `Quan` is the shared base class for quantitative calculations.
+  - `QuanSambles` handles raw numeric samples.
+  - `QuanWithClassesAndFreq` handles grouped class-frequency data.
+  - `QualitaveSambles` handles qualitative samples.
+  - `StatisTools` provides shared helper methods.
+- `UIData`
+  - Converts calculated statistics into table-ready datasets.
+  - Uses `ArrayList`-based data structures for clearer and safer data handling.
+  - Keeps presentation data separate from calculation logic.
+- `Charts`
+  - Contains custom Swing chart components.
+  - Each chart draws itself by overriding `paintComponent`.
+- `UI`
+  - Contains the Swing screens and navigation.
+  - `ui` controls the main frame and page switching.
+  - `HomePanel`, `InputPanel`, `HistoryPanel`, `SettingsPanel`, and `StatisPanel` provide the main user workflow.
+  - `Theme` centralizes light and night mode colors.
+- `storage`
+  - Stores saved experiments.
+  - Prevents duplicate experiment names.
 
-## 📊 How it Works
+## How It Works
 
-The application processes data through a specific pipeline:
-1. **Input**: Data is fed into the system (e.g., an array of integers).
-2. **Process**: The `StatisTools` and `Quan` classes calculate all necessary statistical parameters.
-3. **Map**: `StatisticsDataset` maps these results into tabular formats.
-4. **Visualize**: The UI triggers the `Graphics2D` engine to render the statistics visually.
-
-## 💻 Setup
-
-1. Ensure you have **JDK 8** or higher installed.
-2. Clone the repository.
-3. Compile the source files:
-   ```bash
-   javac statistics/mainN.java
+1. The user selects the experiment type and enters data.
+2. The input screen validates the data and prevents duplicate experiment names.
+3. The experiment is saved.
+4. The correct calculation class processes the data:
+   - Raw samples use raw sample statistics.
+   - Grouped data uses grouped formulas.
+   - Qualitative data uses category frequencies.
+5. `StatisticsDataset` prepares the results for tables.
+6. The UI shows tables and charts.
+7. Saved experiments can be reopened from History.
