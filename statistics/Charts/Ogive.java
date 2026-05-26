@@ -1,13 +1,15 @@
-package statistics.Charts;
+package Charts;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
 
 public class Ogive extends JPanel {
 
     ColumnChart columnChart;
 
-    public Ogive(int[] cumulativeFreq, double[] boundaries) {
+    public Ogive(ArrayList<Integer> cumulativeFreq, ArrayList<Double> boundaries) {
         setLayout(new BorderLayout());
 
         columnChart = new ColumnChart(cumulativeFreq, boundaries);

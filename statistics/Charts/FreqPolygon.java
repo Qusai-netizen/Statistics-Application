@@ -1,13 +1,15 @@
-package statistics.Charts;
+package Charts;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
 
 public class FreqPolygon extends JPanel {
 
     ColumnChart columnChart;
 
-    public FreqPolygon(int[] freq, double[] midPoint) {
+    public FreqPolygon(ArrayList<Integer> freq, ArrayList<Double> midPoint) {
         setLayout(new BorderLayout());
 
         columnChart = new ColumnChart(freq, midPoint);
