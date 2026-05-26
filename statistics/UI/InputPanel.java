@@ -1,6 +1,5 @@
 package UI;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -9,9 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,16 +18,11 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import app.mainN;
 import storage.statisDb;
 
 public class InputPanel extends JPanel {
-
-    private final Color PRIMARY_BLUE = new Color(41, 128, 185);
-    private final Color BACKGROUND_COLOR = new Color(245, 247, 250);
-    private final Color ACCENT_COLOR = new Color(44, 62, 80);
 
     private JTextField nameField;
     private JTextArea numDataArea;
@@ -47,9 +39,7 @@ public class InputPanel extends JPanel {
     HistoryPanel historyPanel;
 
     public InputPanel(ui mainFrame) {
-        mainN.db = new statisDb();
-
-        setBackground(BACKGROUND_COLOR);
+        Theme.panel(this);
         setLayout(new GridBagLayout());
         setBorder(new EmptyBorder(30, 50, 30, 50));
 
@@ -59,8 +49,7 @@ public class InputPanel extends JPanel {
         gbc.insets = new Insets(5, 0, 5, 0);
 
         JLabel title = new JLabel("New Statistical Analysis", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        title.setForeground(ACCENT_COLOR);
+        Theme.title(title, 26);
         gbc.insets = new Insets(0, 0, 20, 0);
         add(title, gbc);
 
@@ -73,8 +62,9 @@ public class InputPanel extends JPanel {
 
         txtDataArea = new JTextArea(4, 20);
         txtDataArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        txtDataArea.setBorder(new LineBorder(new Color(200, 200, 200), 1));
         txtDataArea.setLineWrap(true);
+        txtDataArea.setForeground(Theme.text());
+        Theme.surface(txtDataArea);
         scrollPane = new JScrollPane(txtDataArea);
         scrollPane.setPreferredSize(new Dimension(300, 100));
         add(scrollPane, gbc);
@@ -84,8 +74,9 @@ public class InputPanel extends JPanel {
 
         numDataArea = new JTextArea(4, 20);
         numDataArea.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        numDataArea.setBorder(new LineBorder(new Color(200, 200, 200), 1));
         numDataArea.setLineWrap(true);
+        numDataArea.setForeground(Theme.text());
+        Theme.surface(numDataArea);
         scrollPane2 = new JScrollPane(numDataArea);
         scrollPane2.setPreferredSize(new Dimension(300, 100));
         add(scrollPane2, gbc);
@@ -102,7 +93,7 @@ public class InputPanel extends JPanel {
         JButton quanBtn = createModernButton("Quantitative", "[NUM]");
         JButton quanCFBtn = createModernButton("Quantitative (Classes, Frequency)", "[CLS]");
         JButton submitBtn = createModernButton("Submit", "[OK]");
-        JButton backButton = createModernButton("Back To Home", "🏠", new Color(236, 112, 99));
+        JButton backButton = createModernButton("Back To Home", "[HOME]");
 
         buttonPanel.add(qualBtn);
         buttonPanel.add(quanBtn);
@@ -143,18 +134,7 @@ public class InputPanel extends JPanel {
             statisDb.Experiment savedExperiment = processData(selectedType);
 
             if (savedExperiment != null) {
-                if (statisticsPanel != null) {
-                    mainFrame.mainContainer.remove(statisticsPanel);
-                }
-
-                statisticsPanel = mainN.buildStatisPanel(savedExperiment);
-                mainFrame.mainContainer.add(statisticsPanel, "Statistics");
-                mainFrame.showPage("Statistics");
-
-                if (historyPanel != null)
-                    mainFrame.mainContainer.remove(historyPanel);
-
-                mainFrame.mainContainer.add(historyPanel, "History");
+                mainFrame.showStatistics(savedExperiment);
             }
         });
 
@@ -182,6 +162,12 @@ public class InputPanel extends JPanel {
             return null;
         }
 
+        if (mainN.db.getExperByName(experName) != null) {
+            JOptionPane.showMessageDialog(this, "An experiment with this name already exists.", "Duplicate Name",
+                    JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
         ArrayList<String> sData = new ArrayList<>();
         ArrayList<Integer> iData = new ArrayList<>();
         int classesNum = 0;
@@ -194,7 +180,7 @@ public class InputPanel extends JPanel {
                     return null;
                 }
 
-                sData = new ArrayList<>(Arrays.asList(rawData1.split("\\s*,\\s*")));
+                sData = parseTextValues(rawData1);
             }
 
             else if (type == statisDb.Experiment.enType.QUAN) {
@@ -208,8 +194,7 @@ public class InputPanel extends JPanel {
 
                 classesNum = Integer.parseInt(rawData1);
 
-                String[] temp = rawData2.split("\\s*,\\s*");
-                for (String value : temp) {
+                for (String value : parseTextValues(rawData2)) {
                     iData.add(Integer.parseInt(value));
                 }
             }
@@ -222,10 +207,9 @@ public class InputPanel extends JPanel {
                     return null;
                 }
 
-                sData = new ArrayList<>(Arrays.asList(rawData1.split("\\s*,\\s*")));
+                sData = parseTextValues(rawData1);
 
-                String[] temp = rawData2.split("\\s*,\\s*");
-                for (String value : temp) {
+                for (String value : parseTextValues(rawData2)) {
                     iData.add(Integer.parseInt(value));
                 }
 
@@ -261,42 +245,52 @@ public class InputPanel extends JPanel {
         numDataArea.setText("");
     }
 
+    private ArrayList<String> parseTextValues(String rawData) {
+        ArrayList<String> values = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+
+        for (int i = 0; i < rawData.length(); i++) {
+            char ch = rawData.charAt(i);
+            if (ch == ',') {
+                values.add(current.toString().trim());
+                current.setLength(0);
+            } else {
+                current.append(ch);
+            }
+        }
+
+        values.add(current.toString().trim());
+
+        return values;
+    }
+
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        label.setForeground(new Color(100, 100, 100));
+        Theme.label(label);
         return label;
     }
 
     private JTextField createModernTextField(String placeholder) {
         JTextField tf = new JTextField();
         tf.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        tf.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(new Color(200, 200, 200), 1),
-                new EmptyBorder(5, 10, 5, 10)));
+        tf.setForeground(Theme.text());
+        Theme.surface(tf);
         return tf;
     }
 
     private JButton createModernButton(String text, String icon)
     {
-        return createModernButton(text, icon, PRIMARY_BLUE);
-    }
-    private JButton createModernButton(String text, String icon, Color bg) {
         JButton btn = new JButton(icon + " " + text);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setBackground(PRIMARY_BLUE);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorder(new EmptyBorder(10, 15, 10, 15));
+        Theme.button(btn);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(PRIMARY_BLUE.brighter());
+                btn.setBackground(Theme.primaryHover());
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(bg);
+                btn.setBackground(Theme.primary());
             }
         });
 
