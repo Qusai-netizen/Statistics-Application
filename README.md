@@ -1,6 +1,6 @@
 # Java Statistics Calculator & Visualizer
 
-A comprehensive Java Swing application designed to perform descriptive statistical analysis and generate custom visual data representations. This project was built from the ground up without using external charting libraries, focusing on core Java 2D graphics and object-oriented principles.
+A comprehensive Java Swing application designed to perform descriptive and inferential statistical analysis and generate custom visual data representations. This project was built from the ground up without using external charting libraries, focusing on core Java 2D graphics and object-oriented principles.
 
 ## 🚀 Features
 
