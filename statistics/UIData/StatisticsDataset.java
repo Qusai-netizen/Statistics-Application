@@ -1,13 +1,15 @@
-package statistics.UIData;
+package UIData;
 
-import statistics.StatisCalc.StatisticsCalc;
+import java.util.ArrayList;
+
+import StatisCalc.StatisticsCalc;
 
 public abstract class StatisticsDataset {
     public StatisticsCalc calc;
 
     public abstract void build();
 
-    public abstract Object[][] getMainTable(int rank);
+    public abstract ArrayList<ArrayList<Object>> getMainTable(int rank);
 
-    public abstract String[] getMainColumns(int rank);
+    public abstract ArrayList<String> getMainColumns(int rank);
 }

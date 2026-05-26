@@ -1,11 +1,12 @@
-package statistics.UIData;
+package UIData;
 
-import statistics.StatisCalc.StatisticsCalc;
+import java.util.ArrayList;
+
+import StatisCalc.StatisticsCalc;
 
 public class StringSamplesDataset extends StatisticsDataset {
-    StatisticsCalc calc;
 
-    public StringSamplesDataset(String[] samples) {
+    public StringSamplesDataset(ArrayList<String> samples) {
         this.calc = new StatisticsCalc(samples);
     }
 
@@ -15,26 +16,28 @@ public class StringSamplesDataset extends StatisticsDataset {
     }
 
     @Override
-    public Object[][] getMainTable(int rank) {
-        int classNum = calc.qual._class.length;
-        Object[][] data = new Object[classNum][4];
+    public ArrayList<ArrayList<Object>> getMainTable(int rank) {
+        ArrayList<ArrayList<Object>> data = new ArrayList<>();
 
-        for (int i = 0; i < classNum; i++) {
-            data[i][0] = calc.qual._class[i];
-            data[i][1] = calc.qual.freq[i];
+        for (int i = 0; i < calc.qual._class.size(); i++) {
+            ArrayList<Object> row = new ArrayList<>();
+            row.add(calc.qual._class.get(i));
+            row.add(calc.qual.freq.get(i));
+            row.add(calc.qual.ascendingComulativeFreq.get(i));
+            row.add(calc.qual.descendingComulativeFreq.get(i));
+            data.add(row);
         }
 
         return data;
     }
 
     @Override
-    public String[] getMainColumns(int rank) {
-        return new String[] {
-                "class",
-                "Frequency",
-                "Ascending Comulative Frequency",
-                "Descending Comulative Frequency"
-        };
+    public ArrayList<String> getMainColumns(int rank) {
+        ArrayList<String> columns = new ArrayList<>();
+        columns.add("Class");
+        columns.add("Frequency");
+        columns.add("Ascending Comulative Frequency");
+        columns.add("Descending Comulative Frequency");
+        return columns;
     }
-
 }

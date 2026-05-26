@@ -1,85 +1,87 @@
-package statistics.UIData;
+package UIData;
 
-import statistics.StatisCalc.StatisticsCalc;
+import java.util.ArrayList;
+
+import StatisCalc.StatisticsCalc;
 
 public class ClassFrequencyDataset extends StatisticsDataset {
 
-    private int[] freq;
+    private ArrayList<Integer> freq;
     private int classNum;
-    public StatisticsCalc calc;
 
-    public ClassFrequencyDataset(String[] classes, int[] freq) {
-        this.classNum = classes.length;
-        calc = new StatisticsCalc(classes, freq);
-        this.freq = freq;
+    public ClassFrequencyDataset(ArrayList<String> classes, ArrayList<Integer> freq) {
+        this.classNum = classes.size();
+        this.calc = new StatisticsCalc(classes, freq);
+        this.freq = new ArrayList<>(freq);
     }
 
     @Override
     public void build() {
-        calc.quanC.makeN(freq);
+        calc.quanC.makeN();
     }
 
     @Override
-    public Object[][] getMainTable(int rank) {
+    public ArrayList<ArrayList<Object>> getMainTable(int rank) {
         if (rank == 1) {
-            // Table data
-            Object[][] dataT1 = new Object[classNum][9];
+            ArrayList<ArrayList<Object>> data = new ArrayList<>();
+            int rows = classNum + 1;
 
-            for (int i = 0; i < classNum; i++) {
-                dataT1[i][0] = calc.quanC._class[i];
-                dataT1[i][1] = calc.quanC.freq[i];
-                dataT1[i][2] = calc.quanC.classBoundaries[i];
-                dataT1[i][3] = calc.quanC.midPoint[i];
-                dataT1[i][4] = calc.quanC.classRelativeF[i];
-                dataT1[i][5] = calc.quanC.lessComulativeF[i];
-                dataT1[i][6] = calc.quanC.greaterComulativeF[i];
-                dataT1[i][7] = calc.quanC.ascendingComulativeFreq[i];
-                dataT1[i][8] = calc.quanC.descendingComulativeFreq[i];
+            for (int i = 0; i < rows; i++) {
+                ArrayList<Object> row = new ArrayList<>();
+                row.add(get(calc.quanC._class, i));
+                row.add(get(calc.quanC.freq, i));
+                row.add(get(calc.quanC.classBoundaries, i));
+                row.add(get(calc.quanC.midPoint, i));
+                row.add(get(calc.quanC.classRelativeF, i));
+                row.add(get(calc.quanC.lessComulativeF, i));
+                row.add(get(calc.quanC.greaterComulativeF, i));
+                row.add(get(calc.quanC.ascendingComulativeFreq, i));
+                row.add(get(calc.quanC.descendingComulativeFreq, i));
+                data.add(row);
             }
-            return dataT1;
+
+            return data;
         }
 
-        else {
-            // Table data
-            Object[][] dataT2 = new Object[1][7];
-
-            // dataT2[0][0] = calc.getMean(calc.samplesInt);
-            // dataT2[0][1] = calc.getMean(calc.midPoint, calc.quanC.freq);
-            dataT2[0][2] = calc.quanC.getQuartileC(2);
-            // dataT2[0][3] = calc.getMode(calc.samplesInt);
-            dataT2[0][4] = calc.quanC.getQuartileC(1);
-            dataT2[0][5] = calc.quanC.getQuartileC(2);
-            dataT2[0][6] = calc.quanC.getQuartileC(3);
-            return dataT2;
-        }
+        ArrayList<ArrayList<Object>> data = new ArrayList<>();
+        ArrayList<Object> row = new ArrayList<>();
+        row.add(calc.quanC.getWeightedMean(calc.quanC.midPoint, freq));
+        row.add(calc.quanC.getGroupedMedian());
+        row.add(calc.quanC.getGroupedMode());
+        row.add(calc.quanC.getQuartileC(1));
+        row.add(calc.quanC.getQuartileC(2));
+        row.add(calc.quanC.getQuartileC(3));
+        data.add(row);
+        return data;
     }
 
     @Override
-    public String[] getMainColumns(int rank) {
+    public ArrayList<String> getMainColumns(int rank) {
+        ArrayList<String> columns = new ArrayList<>();
+
         if (rank == 1) {
-            return new String[] {
-                    "Class",
-                    "Frequency",
-                    "Class Boundaries",
-                    "Mid Point",
-                    "Relative Frequency",
-                    "Less Comulative F",
-                    "Greater Comulative F",
-                    "Ascending Comulative Frequency",
-                    "Descending Comulative Frequency"
-            };
+            columns.add("Class");
+            columns.add("Frequency");
+            columns.add("Class Boundaries");
+            columns.add("Mid Point");
+            columns.add("Relative Frequency");
+            columns.add("Less Comulative F");
+            columns.add("Greater Comulative F");
+            columns.add("Ascending Comulative Frequency");
+            columns.add("Descending Comulative Frequency");
+            return columns;
         }
 
-        else {
-            return new String[] {
-                    "Mean",
-                    "Weighted Mean",
-                    "Median",
-                    "Mode",
-                    "Quartile 1",
-                    "Quartile 2",
-                    "Quartile 3"
-            };
-        }
+        columns.add("Weighted Mean");
+        columns.add("Median");
+        columns.add("Mode");
+        columns.add("Quartile 1");
+        columns.add("Quartile 2");
+        columns.add("Quartile 3");
+        return columns;
+    }
+
+    private Object get(ArrayList<?> values, int index) {
+        return index < values.size() ? values.get(index) : "";
     }
 }
