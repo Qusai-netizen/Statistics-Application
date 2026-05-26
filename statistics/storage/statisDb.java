@@ -3,10 +3,8 @@ package storage;
 import java.io.*;
 import java.util.ArrayList;
 
-// تعديل: إضافة Serializable للسماح بحفظ الكلاس في ملف
 public class statisDb implements Serializable {
     private static final long serialVersionUID = 1L;
-    // تعديل: اسم الملف الذي سيتم تخزين البيانات فيه
     private static final String FILE_NAME = "database.ser";
 
     public static class Experiment implements Serializable {
@@ -36,7 +34,6 @@ public class statisDb implements Serializable {
     private ArrayList<Experiment> expers;
 
     public statisDb() {
-        // تعديل: عند إنشاء الكائن، نحاول تحميل البيانات من الملف أولاً
         loadFromFile();
     }
 
@@ -46,9 +43,13 @@ public class statisDb implements Serializable {
 
     public Experiment addExper(Experiment.enType type, String name, ArrayList<String> s, ArrayList<Integer> ints,
             int classesNum) {
+        if (getExperByName(name) != null) {
+            throw new IllegalArgumentException("Experiment name already exists.");
+        }
+
         Experiment ex = new Experiment();
         ex.type = type;
-        ex.experimentName = name;
+        ex.experimentName = name.trim();
 
         switch (type) {
             case QUAL:
@@ -65,7 +66,6 @@ public class statisDb implements Serializable {
         }
 
         expers.add(ex);
-        // تعديل: حفظ التغييرات فوراً في الملف بعد الإضافة
         saveToFile();
         return ex;
     }
@@ -82,15 +82,16 @@ public class statisDb implements Serializable {
     }
 
     public Experiment getExperByName(String name) {
+        String searchedName = name.trim();
+
         for (int i = 0; i < expers.size(); ++i) {
-            if (expers.get(i).experimentName.equals(name)) {
+            if (expers.get(i).experimentName.equalsIgnoreCase(searchedName)) {
                 return expers.get(i);
             }
         }
         return null;
     }
 
-    // تعديل: دالة لحفظ القائمة في ملف خارجي
     private void saveToFile() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
             oos.writeObject(expers);
@@ -99,7 +100,6 @@ public class statisDb implements Serializable {
         }
     }
 
-    // تعديل: دالة لتحميل القائمة من ملف خارجي عند بدء البرنامج
     @SuppressWarnings("unchecked")
     public void loadFromFile() {
         File file = new File(FILE_NAME);
