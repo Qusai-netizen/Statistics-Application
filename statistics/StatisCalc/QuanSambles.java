@@ -1,94 +1,36 @@
-package statistics.StatisCalc;
+package StatisCalc;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class QuanSambles extends Quan {
 
-    public int[] samplesInt;
-
+    public ArrayList<Integer> samplesInt;
     private int sampNum;
 
-    public QuanSambles(int[] samplesInt, int classNum) {
-        this.sampNum = samplesInt.length;
-        this.samplesInt = samplesInt;
+    public QuanSambles(ArrayList<Integer> samplesInt, int classNum) {
+        this.sampNum = samplesInt.size();
+        this.samplesInt = new ArrayList<>(samplesInt);
         this.classNum = classNum;
 
-        _class = new String[classNum];
-        classlower = new int[classNum];
-        classupper = new int[classNum];
-        freq = new int[classNum];
-        classBoundaries = new String[classNum];
-        classBoundlower = new double[classNum];
-        classBoundupper = new double[classNum];
-        midPoint = new double[classNum];
-        classRelativeF = new double[classNum];
-        lessComulativeF = new String[classNum + 1];
-        greaterComulativeF = new String[classNum + 1];
-        cumulativeFreq = new int[classNum];
-        ascendingComulativeFreq = new int[classNum + 1];
-        descendingComulativeFreq = new int[classNum + 1];
-        classBoundariesLowUp = new double[classNum + 1];
+        _class = new ArrayList<>();
+        classlower = new ArrayList<>();
+        classupper = new ArrayList<>();
+        freq = new ArrayList<>();
+        classBoundaries = new ArrayList<>();
+        classBoundlower = new ArrayList<>();
+        classBoundupper = new ArrayList<>();
+        midPoint = new ArrayList<>();
+        classRelativeF = new ArrayList<>();
+        lessComulativeF = new ArrayList<>();
+        greaterComulativeF = new ArrayList<>();
+        cumulativeFreq = new ArrayList<>();
+        ascendingComulativeFreq = new ArrayList<>();
+        descendingComulativeFreq = new ArrayList<>();
+        classBoundariesLowUp = new ArrayList<>();
     }
-
-    private void makeClassN() {
-        int current = StatisTools.getLeastSample(samplesInt),
-                classWidth = StatisTools.getClassWidth(samplesInt, classNum);
-
-        for (int i = 0; i < classNum; ++i) {
-            classlower[i] = current;
-            classupper[i] = current + classWidth - 1;
-            _class[i] = classlower[i] + " - " + classupper[i];
-            current += classWidth;
-        }
-    }
-
-    private void makeFreqI() {
-        for (int i = 0; i < classNum; ++i) {
-            for (int j = 0; j < sampNum; ++j) {
-                if (samplesInt[j] >= classlower[i] && samplesInt[j] <= classupper[i]) {
-                    ++freq[i];
-                }
-            }
-        }
-    }
-
-    public int getMode(int[] elements) {
-        java.util.Map<Integer, Integer> frequencyMap = new java.util.HashMap<>();
-        for (int num : elements) {
-            frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
-        }
-
-        int mode = elements[0];
-        int maxCount = 0;
-        for (java.util.Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                mode = entry.getKey();
-            }
-        }
-        return mode;
-    }
-
-    public double getMode(double[] elements) {
-        java.util.Map<Double, Integer> frequencyMap = new java.util.HashMap<>();
-        for (double num : elements) {
-            frequencyMap.put(num, frequencyMap.getOrDefault(num, 0) + 1);
-        }
-
-        double mode = elements[0];
-        int maxCount = 0;
-        for (java.util.Map.Entry<Double, Integer> entry : frequencyMap.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                mode = entry.getKey();
-            }
-        }
-        return mode;
-    }
-
-    public double getQuartile(int i) {
-        return samplesInt[(int) ((sampNum + 1) * i / 4) - 1];
-    }
-
-    // Main method
 
     public void makeN() {
         makeClassN();
@@ -96,13 +38,88 @@ public class QuanSambles extends Quan {
         makeClassBoundaries();
         makeClassBoundariesLowUp();
         makeMidPoint();
-        freqSum = StatisTools.getFreqSum(freq, classNum);
+        freqSum = StatisTools.getFreqSum(freq);
         makeRelativeF();
         makeLessComulativeF();
         makeGreaterComulativeF();
         makeAscendingComulativeFreq();
-        cumulativeFreq = StatisTools.getCumulativeFreq(freq, classNum);
+        cumulativeFreq = StatisTools.getCumulativeFreq(freq);
         makeDescendingComulativeFreq();
     }
-}
 
+    private void makeClassN() {
+        _class.clear();
+        classlower.clear();
+        classupper.clear();
+
+        int current = StatisTools.getLeastSample(samplesInt);
+        int classWidth = StatisTools.getClassWidth(samplesInt, classNum);
+
+        for (int i = 0; i < classNum; ++i) {
+            int lower = current;
+            int upper = current + classWidth - 1;
+            classlower.add(lower);
+            classupper.add(upper);
+            _class.add(lower + " - " + upper);
+            current += classWidth;
+        }
+    }
+
+    private void makeFreqI() {
+        freq.clear();
+
+        for (int i = 0; i < classNum; ++i) {
+            int count = 0;
+
+            for (int sample : samplesInt) {
+                if (sample >= classlower.get(i) && sample <= classupper.get(i)) {
+                    count++;
+                }
+            }
+
+            freq.add(count);
+        }
+    }
+
+    public ArrayList<Integer> getMode() {
+        ArrayList<Integer> modes = new ArrayList<>();
+        LinkedHashMap<Integer, Integer> frequencyMap = new LinkedHashMap<>();
+        int maxCount = 0;
+
+        for (int num : samplesInt) {
+            int count = frequencyMap.getOrDefault(num, 0) + 1;
+            frequencyMap.put(num, count);
+            maxCount = Math.max(maxCount, count);
+        }
+
+        for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+            if (entry.getValue() == maxCount) {
+                modes.add(entry.getKey());
+            }
+        }
+
+        return modes;
+    }
+
+    public double getQuartile(int i) {
+        if (samplesInt.isEmpty() || i < 1 || i > 3) {
+            return 0.0;
+        }
+
+        ArrayList<Integer> sorted = new ArrayList<>(samplesInt);
+        Collections.sort(sorted);
+        double position = (sorted.size() + 1) * i / 4.0;
+
+        if (position <= 1) {
+            return sorted.get(0);
+        }
+
+        if (position >= sorted.size()) {
+            return sorted.get(sorted.size() - 1);
+        }
+
+        int lowerIndex = (int) Math.floor(position) - 1;
+        double fraction = position - Math.floor(position);
+        return sorted.get(lowerIndex) + fraction * (sorted.get(lowerIndex + 1) - sorted.get(lowerIndex));
+    }
+}

@@ -1,72 +1,84 @@
-package statistics.StatisCalc;
+package StatisCalc;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class QualitaveSambles {
 
-    StatisTools statisTools = new StatisTools();
-
-    public int[] freq;
-
-    public double[] classBoundlower, classBoundupper,
-            midPoint, classRelativeF,
-            classBoundariesLowUp;
-
-    public String[] _class;
-
-    public String[] classBoundaries;
-
-    public String[] lessComulativeF;
-
-    public String[] greaterComulativeF;
-
-    public String[] samplesS;
-
+    public ArrayList<Integer> freq;
+    public ArrayList<Integer> ascendingComulativeFreq;
+    public ArrayList<Integer> descendingComulativeFreq;
+    public ArrayList<String> _class;
+    public ArrayList<String> samplesS;
     public int freqSum;
 
-    private int sampNum, classNum;
+    private int sampNum;
+    private int classNum;
 
-    // For descriptive statistics
-    public QualitaveSambles(String[] samplesS) {
-        this.sampNum = samplesS.length;
-        this.samplesS = samplesS;
-        samplesS = new String[sampNum];
+    public QualitaveSambles(ArrayList<String> samplesS) {
+        this.sampNum = samplesS.size();
+        this.samplesS = new ArrayList<>(samplesS);
+        this._class = new ArrayList<>();
+        this.freq = new ArrayList<>();
+        this.ascendingComulativeFreq = new ArrayList<>();
+        this.descendingComulativeFreq = new ArrayList<>();
 
         makeClassS();
-        this.classNum = _class.length;
-
-        freq = new int[classNum];
+        this.classNum = _class.size();
     }
 
     private void makeClassS() {
-        if (samplesS == null || samplesS.length == 0 || _class != null)
-            return;
+        LinkedHashSet<String> classes = new LinkedHashSet<>();
 
-        Set<String> cl = new HashSet<>();
-        for (String s : samplesS) {
-            if (s != null) {
-                cl.add(s);
+        for (String sample : samplesS) {
+            if (sample != null && !sample.trim().isEmpty()) {
+                classes.add(sample.trim());
             }
         }
 
-        _class = cl.toArray(new String[0]);
+        _class.addAll(classes);
     }
 
     private void makeFreqS() {
-        for (int i = 0; i < classNum; ++i) {
-            for (int j = 0; j < sampNum; ++j) {
-                if (_class[i].equals(samplesS[j])) {
-                    ++freq[i];
+        freq.clear();
+
+        for (String classValue : _class) {
+            int count = 0;
+
+            for (String sample : samplesS) {
+                if (classValue.equals(sample)) {
+                    count++;
                 }
             }
+
+            freq.add(count);
         }
     }
 
-    // Main method
+    private void makeAscendingComulativeFreq() {
+        ascendingComulativeFreq.clear();
+        int sum = 0;
+
+        for (int value : freq) {
+            sum += value;
+            ascendingComulativeFreq.add(sum);
+        }
+    }
+
+    private void makeDescendingComulativeFreq() {
+        descendingComulativeFreq.clear();
+        int sum = freqSum;
+
+        for (int value : freq) {
+            descendingComulativeFreq.add(sum);
+            sum -= value;
+        }
+    }
 
     public void makeS() {
         makeFreqS();
-        freqSum = StatisTools.getFreqSum(freq, classNum);
+        freqSum = StatisTools.getFreqSum(freq);
+        makeAscendingComulativeFreq();
+        makeDescendingComulativeFreq();
     }
 }

@@ -1,63 +1,53 @@
-package statistics.StatisCalc;
+package StatisCalc;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class StatisTools {
 
-    // Assistance methods
-
-    public static int getFreqSum(int[] freq, int classNum) {
+    public static int getFreqSum(ArrayList<Integer> freq) {
         int sum = 0;
-        for (int i = 0; i < classNum; ++i) {
-            sum += freq[i];
+        for (int value : freq) {
+            sum += value;
         }
         return sum;
     }
 
-    public static int[] getCumulativeFreq(int[] freq, int classNum) {
-        int[] cumulativeFreq = new int[classNum];
-        cumulativeFreq[0] = freq[0];
-        for (int i = 1; i < classNum; ++i) {
-            cumulativeFreq[i] = cumulativeFreq[i - 1] + freq[i];
+    public static ArrayList<Integer> getCumulativeFreq(ArrayList<Integer> freq) {
+        ArrayList<Integer> cumulativeFreq = new ArrayList<>();
+        int sum = 0;
+
+        for (int value : freq) {
+            sum += value;
+            cumulativeFreq.add(sum);
         }
+
         return cumulativeFreq;
     }
 
-    public static int getGreatestSample(int[] samplesInt) {
-        int greatest = samplesInt[0];
-        for (int i = 1; i < samplesInt.length; i++) {
-            if (samplesInt[i] > greatest) {
-                greatest = samplesInt[i];
-            }
-        }
-        return greatest;
+    public static int getGreatestSample(ArrayList<Integer> samplesInt) {
+        return Collections.max(samplesInt);
     }
 
-    public static int getLeastSample(int[] samplesInt) {
-        int least = samplesInt[0];
-        for (int i = 1; i < samplesInt.length; i++) {
-            if (samplesInt[i] < least) {
-                least = samplesInt[i];
-            }
-        }
-        return least;
+    public static int getLeastSample(ArrayList<Integer> samplesInt) {
+        return Collections.min(samplesInt);
     }
 
-    public static int getGreatestLeastDifference(int[] samplesInt) {
+    public static int getGreatestLeastDifference(ArrayList<Integer> samplesInt) {
         return getGreatestSample(samplesInt) - getLeastSample(samplesInt);
     }
 
-    public static int getClassWidth(int[] samplesInt, int classNum) {
-        return (int) (getGreatestLeastDifference(samplesInt) / classNum) + 1;
+    public static int getClassWidth(ArrayList<Integer> samplesInt, int classNum) {
+        return (int) Math.ceil((getGreatestLeastDifference(samplesInt) + 1) / (double) classNum);
     }
 
-    public static int firstEmptyInd(String[] arr) {
-        if (arr != null) {
-            for (int i = 0; i < arr.length; ++i) {
-                if (arr[i] == null || arr[i].isEmpty()) {
-                    return i;
-                }
+    public static int firstEmptyInd(ArrayList<String> values) {
+        for (int i = 0; i < values.size(); ++i) {
+            String value = values.get(i);
+            if (value == null || value.isEmpty()) {
+                return i;
             }
         }
-        return 0;
+        return values.size();
     }
-
 }

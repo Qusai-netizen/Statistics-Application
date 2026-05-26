@@ -1,4 +1,6 @@
-package statistics.StatisCalc;
+package StatisCalc;
+
+import java.util.ArrayList;
 
 public class StatisticsCalc {
 
@@ -6,19 +8,15 @@ public class StatisticsCalc {
     public QuanSambles quan;
     public QuanWithClassesAndFreq quanC;
 
-    // For descriptive statistics
-    public StatisticsCalc(String[] samplesS) {
+    public StatisticsCalc(ArrayList<String> samplesS) {
         qual = new QualitaveSambles(samplesS);
     }
 
-    // For frequency distribution
-    public StatisticsCalc(int[] samplesInt, int classNum) {
+    public StatisticsCalc(ArrayList<Integer> samplesInt, int classNum) {
         quan = new QuanSambles(samplesInt, classNum);
     }
 
-    // For frequency distribution with given classes and frequencies
-    public StatisticsCalc(String[] classes, int[] freq) {
+    public StatisticsCalc(ArrayList<String> classes, ArrayList<Integer> freq) {
         quanC = new QuanWithClassesAndFreq(classes, freq);
     }
-
 }
