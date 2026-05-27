@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -21,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 
 import app.mainN;
 import storage.statisDb;
+import storage.statisDb.Experiment.*;
 
 public class InputPanel extends JPanel {
 
@@ -28,14 +30,16 @@ public class InputPanel extends JPanel {
     private JTextArea numDataArea;
     private JTextArea txtDataArea;
 
-    private statisDb.Experiment.enType selectedType;
+    private enType selectedType;
 
     private JLabel label1;
     private JLabel label2;
 
     private JScrollPane scrollPane;
     private JScrollPane scrollPane2;
-    private StatisPanel statisticsPanel;
+
+    private JCheckBox isOrdinalCBox;
+
     HistoryPanel historyPanel;
 
     public InputPanel(ui mainFrame) {
@@ -81,10 +85,14 @@ public class InputPanel extends JPanel {
         scrollPane2.setPreferredSize(new Dimension(300, 100));
         add(scrollPane2, gbc);
 
+        isOrdinalCBox = createModernCheckBox("Ordinal");
+        add(isOrdinalCBox, gbc);
+
         label1.setVisible(false);
         label2.setVisible(false);
         scrollPane.setVisible(false);
         scrollPane2.setVisible(false);
+        isOrdinalCBox.setVisible(false);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 4, 10, 40));
         buttonPanel.setOpaque(false);
@@ -99,30 +107,30 @@ public class InputPanel extends JPanel {
         buttonPanel.add(quanBtn);
         buttonPanel.add(quanCFBtn);
         buttonPanel.add(submitBtn);
-        
+
         gbc.insets = new Insets(20, 0, 10, 0);
         add(buttonPanel, gbc);
 
         add(backButton, gbc);
 
         qualBtn.addActionListener(e -> {
-            selectedType = statisDb.Experiment.enType.QUAL;
+            selectedType = enType.QUAL;
             label1.setText("Qualitative Samples (Comma separated):");
-            updateVisibility(true, false);
+            updateVisibility(selectedType);
         });
 
         quanBtn.addActionListener(e -> {
-            selectedType = statisDb.Experiment.enType.QUAN;
+            selectedType = enType.QUAN;
             label1.setText("Number of classes");
             label2.setText("Numeric Samples (Comma separated):");
-            updateVisibility(true, true);
+            updateVisibility(selectedType);
         });
 
         quanCFBtn.addActionListener(e -> {
-            selectedType = statisDb.Experiment.enType.QUANCF;
+            selectedType = enType.QUANCF;
             label1.setText("Classes (Comma separated) (X - Y):");
             label2.setText("Frequencies (Comma separated):");
-            updateVisibility(true, true);
+            updateVisibility(selectedType);
         });
 
         submitBtn.addActionListener(e -> {
@@ -142,16 +150,42 @@ public class InputPanel extends JPanel {
 
     }
 
-    private void updateVisibility(boolean showScroll1, boolean showScroll2) {
-        label1.setVisible(showScroll1);
-        label2.setVisible(showScroll2);
-        scrollPane.setVisible(showScroll1);
-        scrollPane2.setVisible(showScroll2);
+    private void updateVisibility(enType type) {
+
+        switch (type) {
+            case QUAL:
+                label1.setVisible(true);
+                label2.setVisible(false);
+                scrollPane.setVisible(true);
+                scrollPane2.setVisible(false);
+                isOrdinalCBox.setVisible(true); // Now works flawlessly because it's attached directly to GridBagLayout
+                break;
+
+            case QUAN:
+                label1.setVisible(true);
+                label2.setVisible(true);
+                scrollPane.setVisible(true);
+                scrollPane2.setVisible(true);
+                isOrdinalCBox.setVisible(false);
+                break;
+
+            case QUANCF:
+                label1.setVisible(true);
+                label2.setVisible(true);
+                scrollPane.setVisible(true);
+                scrollPane2.setVisible(true);
+                isOrdinalCBox.setVisible(false);
+                break;
+
+            default:
+                break;
+        }
+
         revalidate();
         repaint();
     }
 
-    private statisDb.Experiment processData(statisDb.Experiment.enType type) {
+    private statisDb.Experiment processData(enType type) {
         String experName = nameField.getText().trim();
         String rawData1 = txtDataArea.getText().trim();
         String rawData2 = numDataArea.getText().trim();
@@ -173,7 +207,7 @@ public class InputPanel extends JPanel {
         int classesNum = 0;
 
         try {
-            if (type == statisDb.Experiment.enType.QUAL) {
+            if (type == enType.QUAL) {
                 if (rawData1.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please, enter Qualitative samples.", "Input Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -183,7 +217,7 @@ public class InputPanel extends JPanel {
                 sData = parseTextValues(rawData1);
             }
 
-            else if (type == statisDb.Experiment.enType.QUAN) {
+            else if (type == enType.QUAN) {
                 if (rawData1.isEmpty() || rawData2.isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             "Please, enter The number of classes and Numeric samples.",
@@ -199,7 +233,7 @@ public class InputPanel extends JPanel {
                 }
             }
 
-            else if (type == statisDb.Experiment.enType.QUANCF) {
+            else if (type == enType.QUANCF) {
 
                 if (rawData1.isEmpty() || rawData2.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please, fill both Classes and Frequencies fields.",
@@ -228,7 +262,10 @@ public class InputPanel extends JPanel {
         }
 
         statisDb.Experiment savedExperiment;
-        if (type == statisDb.Experiment.enType.QUAN) {
+        if (type == enType.QUAL) {
+            // Save ordinal as part of this experiment so another checkbox change cannot affect it later.
+            savedExperiment = mainN.db.addExper(type, experName, sData, iData, isOrdinalCBox.isSelected());
+        } else if (type == enType.QUAN) {
             savedExperiment = mainN.db.addExper(type, experName, sData, iData, classesNum);
         } else {
             savedExperiment = mainN.db.addExper(type, experName, sData, iData);
@@ -278,8 +315,28 @@ public class InputPanel extends JPanel {
         return tf;
     }
 
-    private JButton createModernButton(String text, String icon)
-    {
+    private JCheckBox createModernCheckBox(String text) {
+        JCheckBox checkBox = new JCheckBox(text);
+
+        checkBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        checkBox.setForeground(Theme.text());
+        checkBox.setOpaque(false);
+        checkBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        checkBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                checkBox.setBackground(Theme.primaryHover());
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                checkBox.setBackground(Theme.primary());
+            }
+        });
+
+        return checkBox;
+    }
+
+    private JButton createModernButton(String text, String icon) {
         JButton btn = new JButton(icon + " " + text);
         Theme.button(btn);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));

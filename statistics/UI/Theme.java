@@ -5,6 +5,7 @@ import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
@@ -69,5 +70,10 @@ public class Theme {
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(new EmptyBorder(10, 16, 10, 16));
+    }
+
+    public static void checkBox(JCheckBox _checkBox) {
+        _checkBox.setFont(new Font("Arial", Font.BOLD, 14));
+        _checkBox.setForeground(primary());
     }
 }
