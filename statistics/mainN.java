@@ -31,7 +31,7 @@ public class mainN {
         }
 
         if (experiment.type == Experiment.enType.QUAL) {
-            StringSamplesDataset dataset = new StringSamplesDataset(experiment.samplesS);
+            StringSamplesDataset dataset = new StringSamplesDataset(experiment.samplesS, experiment.isOrdinal);
             dataset.build();
 
             Table table = new Table(dataset.getMainTable(1), dataset.getMainColumns(1));
