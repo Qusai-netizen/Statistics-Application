@@ -18,8 +18,17 @@ public class QualitaveSambles {
         this.freq = new ArrayList<>();
         this.ascendingComulativeFreq = new ArrayList<>();
         this.descendingComulativeFreq = new ArrayList<>();
+    }
 
+    public void makeS(boolean _isOrdinal) {
         makeClassS();
+        makeFreqS();
+        freqSum = StatisTools.getFreqSum(freq);
+
+        if (_isOrdinal) {
+            makeAscendingComulativeFreq();
+            makeDescendingComulativeFreq();
+        }
     }
 
     private void makeClassS() {
@@ -54,6 +63,7 @@ public class QualitaveSambles {
         ascendingComulativeFreq.clear();
         int sum = 0;
 
+        ascendingComulativeFreq.add(sum);
         for (int value : freq) {
             sum += value;
             ascendingComulativeFreq.add(sum);
@@ -68,12 +78,6 @@ public class QualitaveSambles {
             descendingComulativeFreq.add(sum);
             sum -= value;
         }
-    }
-
-    public void makeS() {
-        makeFreqS();
-        freqSum = StatisTools.getFreqSum(freq);
-        makeAscendingComulativeFreq();
-        makeDescendingComulativeFreq();
+        descendingComulativeFreq.add(sum);
     }
 }
