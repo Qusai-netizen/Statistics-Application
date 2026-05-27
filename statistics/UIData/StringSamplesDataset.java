@@ -23,8 +23,6 @@ public class StringSamplesDataset extends StatisticsDataset {
             ArrayList<Object> row = new ArrayList<>();
             row.add(calc.qual._class.get(i));
             row.add(calc.qual.freq.get(i));
-            row.add(calc.qual.ascendingComulativeFreq.get(i));
-            row.add(calc.qual.descendingComulativeFreq.get(i));
             data.add(row);
         }
 

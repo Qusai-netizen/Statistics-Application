@@ -34,8 +34,6 @@ public class NumericSamplesDataset extends StatisticsDataset {
                 row.add(get(calc.quan.classBoundaries, i));
                 row.add(get(calc.quan.midPoint, i));
                 row.add(get(calc.quan.classRelativeF, i));
-                row.add(get(calc.quan.lessComulativeF, i));
-                row.add(get(calc.quan.greaterComulativeF, i));
                 row.add(get(calc.quan.ascendingComulativeFreq, i));
                 row.add(get(calc.quan.descendingComulativeFreq, i));
                 data.add(row);
@@ -66,10 +64,8 @@ public class NumericSamplesDataset extends StatisticsDataset {
             columns.add("Class Boundaries");
             columns.add("Mid Point");
             columns.add("Relative Frequency");
-            columns.add("Less Comulative F");
-            columns.add("Greater Comulative F");
-            columns.add("Ascending Comulative Frequency");
-            columns.add("Descending Comulative Frequency");
+            columns.add("Cum. Frequency (Ascending)");
+            columns.add("Cum. Frequency (Descending)");
             return columns;
         }
 

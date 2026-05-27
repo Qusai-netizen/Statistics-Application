@@ -33,8 +33,6 @@ public class ClassFrequencyDataset extends StatisticsDataset {
                 row.add(get(calc.quanC.classBoundaries, i));
                 row.add(get(calc.quanC.midPoint, i));
                 row.add(get(calc.quanC.classRelativeF, i));
-                row.add(get(calc.quanC.lessComulativeF, i));
-                row.add(get(calc.quanC.greaterComulativeF, i));
                 row.add(get(calc.quanC.ascendingComulativeFreq, i));
                 row.add(get(calc.quanC.descendingComulativeFreq, i));
                 data.add(row);
@@ -65,10 +63,8 @@ public class ClassFrequencyDataset extends StatisticsDataset {
             columns.add("Class Boundaries");
             columns.add("Mid Point");
             columns.add("Relative Frequency");
-            columns.add("Less Comulative F");
-            columns.add("Greater Comulative F");
-            columns.add("Ascending Comulative Frequency");
-            columns.add("Descending Comulative Frequency");
+            columns.add("Cum. Frequency (Ascending)");
+            columns.add("Cum. Frequency (Descending)");
             return columns;
         }
 
