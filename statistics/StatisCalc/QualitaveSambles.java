@@ -13,7 +13,6 @@ public class QualitaveSambles {
     public int freqSum;
 
     public QualitaveSambles(ArrayList<String> samplesS) {
-        this.sampNum = samplesS.size();
         this.samplesS = new ArrayList<>(samplesS);
         this._class = new ArrayList<>();
         this.freq = new ArrayList<>();
@@ -21,7 +20,6 @@ public class QualitaveSambles {
         this.descendingComulativeFreq = new ArrayList<>();
 
         makeClassS();
-        this.classNum = _class.size();
     }
 
     private void makeClassS() {
