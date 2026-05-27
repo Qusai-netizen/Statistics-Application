@@ -2,6 +2,8 @@ package UI;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,6 +13,8 @@ import storage.statisDb.Experiment;
 
 public class ui {
 
+    private final Toolkit toolKit = Toolkit.getDefaultToolkit();
+    private Dimension d = toolKit.getScreenSize();
     private CardLayout cardLayout;
     private JFrame frame;
     private HistoryPanel historyPanel;
@@ -20,9 +24,12 @@ public class ui {
     public ui() {
         mainN.db = new storage.statisDb();
 
+        // To fit with the screen size directly.
+        d.setSize(d.width, d.height - 40);
+
         frame = new JFrame("Statistics Calculator");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1900, 1080);
+        frame.setSize(d);
         frame.setLocationRelativeTo(null);
         frame.setLayout(new BorderLayout());
 
