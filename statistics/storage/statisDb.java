@@ -20,6 +20,7 @@ public class statisDb implements Serializable {
         public ArrayList<String> classes;
         public ArrayList<Integer> freq;
         public String experimentName;
+        public boolean isOrdinal = true;
 
         public int getClassesNum() {
             return classesNum;
@@ -42,7 +43,17 @@ public class statisDb implements Serializable {
     }
 
     public Experiment addExper(Experiment.enType type, String name, ArrayList<String> s, ArrayList<Integer> ints,
+            boolean isOrdinal) {
+        return addExper(type, name, s, ints, 0, isOrdinal);
+    }
+
+    public Experiment addExper(Experiment.enType type, String name, ArrayList<String> s, ArrayList<Integer> ints,
             int classesNum) {
+        return addExper(type, name, s, ints, classesNum, false);
+    }
+
+    public Experiment addExper(Experiment.enType type, String name, ArrayList<String> s, ArrayList<Integer> ints,
+            int classesNum, boolean isOrdinal) {
         if (getExperByName(name) != null) {
             throw new IllegalArgumentException("Experiment name already exists.");
         }
@@ -54,6 +65,7 @@ public class statisDb implements Serializable {
         switch (type) {
             case QUAL:
                 ex.samplesS = s;
+                ex.isOrdinal = isOrdinal;
                 break;
             case QUAN:
                 ex.samplesInt = ints;
