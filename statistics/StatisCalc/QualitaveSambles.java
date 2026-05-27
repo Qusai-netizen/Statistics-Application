@@ -12,9 +12,6 @@ public class QualitaveSambles {
     public ArrayList<String> samplesS;
     public int freqSum;
 
-    private int sampNum;
-    private int classNum;
-
     public QualitaveSambles(ArrayList<String> samplesS) {
         this.sampNum = samplesS.size();
         this.samplesS = new ArrayList<>(samplesS);
