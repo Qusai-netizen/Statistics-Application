@@ -8,10 +8,8 @@ import java.util.Map;
 public class QuanSambles extends Quan {
 
     public ArrayList<Integer> samplesInt;
-    private int sampNum;
 
     public QuanSambles(ArrayList<Integer> samplesInt, int classNum) {
-        this.sampNum = samplesInt.size();
         this.samplesInt = new ArrayList<>(samplesInt);
         this.classNum = classNum;
 
