@@ -24,7 +24,7 @@ public class ClassFrequencyDataset extends StatisticsDataset {
     public ArrayList<ArrayList<Object>> getMainTable(int rank) {
         if (rank == 1) {
             ArrayList<ArrayList<Object>> data = new ArrayList<>();
-            int rows = classNum + 1;
+            final int rows = classNum + 1;
 
             for (int i = 0; i < rows; i++) {
                 ArrayList<Object> row = new ArrayList<>();
