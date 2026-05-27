@@ -22,8 +22,6 @@ public class QuanSambles extends Quan {
         classBoundupper = new ArrayList<>();
         midPoint = new ArrayList<>();
         classRelativeF = new ArrayList<>();
-        lessComulativeF = new ArrayList<>();
-        greaterComulativeF = new ArrayList<>();
         cumulativeFreq = new ArrayList<>();
         ascendingComulativeFreq = new ArrayList<>();
         descendingComulativeFreq = new ArrayList<>();
@@ -38,8 +36,6 @@ public class QuanSambles extends Quan {
         makeMidPoint();
         freqSum = StatisTools.getFreqSum(freq);
         makeRelativeF();
-        makeLessComulativeF();
-        makeGreaterComulativeF();
         makeAscendingComulativeFreq();
         cumulativeFreq = StatisTools.getCumulativeFreq(freq);
         makeDescendingComulativeFreq();

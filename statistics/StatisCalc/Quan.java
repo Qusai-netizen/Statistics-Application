@@ -20,8 +20,6 @@ public class Quan {
 
     public ArrayList<String> _class;
     public ArrayList<String> classBoundaries;
-    public ArrayList<String> lessComulativeF;
-    public ArrayList<String> greaterComulativeF;
 
     public int freqSum;
     protected int classNum;
@@ -90,22 +88,6 @@ public class Quan {
         }
 
         return counter;
-    }
-
-    protected void makeLessComulativeF() {
-        lessComulativeF.clear();
-
-        for (double boundary : classBoundariesLowUp) {
-            lessComulativeF.add("Less (" + boundary + ") = " + getLessThanNInSamplesInt(boundary));
-        }
-    }
-
-    protected void makeGreaterComulativeF() {
-        greaterComulativeF.clear();
-
-        for (double boundary : classBoundariesLowUp) {
-            greaterComulativeF.add("Greater (" + boundary + ") = " + getGreaterThanNInSamplesInt(boundary));
-        }
     }
 
     protected void makeAscendingComulativeFreq() {
